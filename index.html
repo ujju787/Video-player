@@ -1,1 +1,210 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyTube - Custom Video Player</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .video-card {
+      background-color: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    video {
+      width: 100%;
+      display: block;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background-color: #1f1f1f;
+    }
+
+    .controls button,
+    .controls select,
+    .controls input[type=range] {
+      margin: 4px;
+    }
+
+    .btn {
+      background-color: #ff0000;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background-color: #cc0000;
+    }
+
+    select {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+
+    input[type=range] {
+      width: 100px;
+    }
+
+    .quality-info {
+      text-align: center;
+      margin-top: 10px;
+      color: #aaa;
+    }
+
+    .seek-bar {
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      input[type=range] {
+        width: 100%;
+      }
+
+      .seek-bar {
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MyTube - Custom Video Player</h1>
+
+    <div class="video-card">
+      <video id="myVideo" src="assets/Mahavatar_Narsimha_2025.mkv" type="video/mp4"></video>
+      <div class="controls">
+        <button id="playPauseBtn" class="btn">Play</button>
+
+        <div class="seek-bar">
+          <input type="range" id="seekBar" value="0" min="0" step="0.1">
+        </div>
+
+        <button id="muteBtn" class="btn">Mute</button>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+
+        <select id="qualitySelect">
+          <option value="1080p">1080p</option>
+          <option value="720p" selected>720p</option>
+          <option value="480p">480p</option>
+          <option value="360p">360p</option>
+        </select>
+
+        <button id="fullscreenBtn" class="btn">Fullscreen</button>
+      </div>
+    </div>
+
+    <div class="quality-info">
+      Current Quality: <span id="qualityLabel">720p</span> (Simulated)
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('myVideo');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const seekBar = document.getElementById('seekBar');
+    const qualitySelect = document.getElementById('qualitySelect');
+    const qualityLabel = document.getElementById('qualityLabel');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    // Play/Pause
+    playPauseBtn.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playPauseBtn.textContent = 'Pause';
+      } else {
+        video.pause();
+        playPauseBtn.textContent = 'Play';
+      }
+    });
+
+    // Mute/Unmute
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteBtn.textContent = video.muted ? 'Unmute' : 'Mute';
+    });
+
+    // Volume control
+    volumeSlider.addEventListener('input', () => {
+      video.volume = volumeSlider.value;
+      if (video.volume === 0) {
+        video.muted = true;
+        muteBtn.textContent = 'Unmute';
+      } else {
+        video.muted = false;
+        muteBtn.textContent = 'Mute';
+      }
+    });
+
+    // Seek bar update as video plays
+    video.addEventListener('timeupdate', () => {
+      seekBar.max = video.duration;
+      seekBar.value = video.currentTime;
+    });
+
+    // Seek bar manual drag
+    seekBar.addEventListener('input', () => {
+      video.currentTime = seekBar.value;
+    });
+
+    // Quality dropdown (simulated)
+    qualitySelect.addEventListener('change', (e) => {
+      const selected = e.target.value;
+      qualityLabel.textContent = selected;
+      alert(`Switched to ${selected} (simulated only)`);
+      // Real implementation would load different video sources
+    });
+
+    // Fullscreen button
+    fullscreenBtn.addEventListener('click', () => {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+    });
+  </script>
+</body>
+</html>
